@@ -1,3 +1,4 @@
 sha256crypt
 sha512crypt
 md5crypt
+md5.o
