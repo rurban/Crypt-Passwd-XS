@@ -63,6 +63,9 @@
 #include <pwd.h>
 #include <string.h>
 #include "crypt.h"
+#include <arpa/inet.h>
+
+#define     _PASSWORD_EFMT1         '_'     /* extended encryption format */
 
 /* We can't always assume gcc */
 #ifdef __GNUC__
