@@ -367,7 +367,7 @@ setup_salt(long salt)
 }
 
 static int
-des_setkey(const char *key)
+des_setkey(u_char *key)
 {
 	u_int32_t	k0, k1, rawkey0, rawkey1;
 	int		shifts, round;
@@ -563,7 +563,7 @@ do_des(	u_int32_t l_in, u_int32_t r_in, u_int32_t *l_out, u_int32_t *r_out, int 
 }
 
 static int
-des_cipher(const char *in, char *out, long salt, int count)
+des_cipher(const u_char *in, u_char *out, long salt, int count)
 {
 	const uint32_t	*in32;
 	uint32_t	l_out, r_out, rawl, rawr, *out32;
@@ -639,7 +639,7 @@ crypt_des(const char *key, const char *setting)
 			if (des_setkey((u_char *) keybuf))
 				return(NULL);
 		}
-		strncpy(output, setting, 9);
+		strncpy((char *) output, setting, 9);
 
 		/*
 		 * Double check that we weren't given a short setting.
@@ -649,7 +649,7 @@ crypt_des(const char *key, const char *setting)
 		 * NUL in it.
 		 */
 		output[9] = '\0';
-		p = output + strlen(output);
+		p = output + strlen((char *)output);
 	} else {
 		/*
 		 * "old"-style:
@@ -699,5 +699,5 @@ crypt_des(const char *key, const char *setting)
 	*p++ = ascii64[l & 0x3f];
 	*p = 0;
 
-	return(output);
+	return((char *)output);
 }
