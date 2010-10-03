@@ -135,5 +135,12 @@ crypt_md5(const char *pw, const char *salt)
 }
 
 int main(int argc, char **argv) {
-	return 0;
+  const char *password = "test1234";
+  const char *salt = "12345";
+  const char *expected = "$1$12345$8R/aJ9geL80VC/tEqvbQ01";
+  char * got;
+
+  got = crypt_md5(password, salt);
+  printf("Got: %s\nExpected: %s\n", got, expected);
+  return 0;
 }
