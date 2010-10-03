@@ -34,6 +34,7 @@ documentation and/or software.
 #define MD5_BLOCK_LENGTH		64
 #define MD5_DIGEST_LENGTH		16
 #define MD5_DIGEST_STRING_LENGTH	(MD5_DIGEST_LENGTH * 2 + 1)
+#define MD5_SIZE 16
 
 /* MD5 context. */
 typedef struct MD5Context {
@@ -53,6 +54,7 @@ char * MD5End(MD5_CTX *, char *);
 char * MD5File(const char *, char *);
 char * MD5FileChunk(const char *, char *, off_t, off_t);
 char * MD5Data(const void *, unsigned int, char *);
+void _crypt_to64(char *s, unsigned long v, int n);
 #ifdef _KERNEL
 void MD5Transform (u_int32_t [4], const unsigned char [64]);
 #endif
