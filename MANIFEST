@@ -1,0 +1,11 @@
+Copyright
+Changes
+INSTALL
+MANIFEST
+Makefile.PL
+README
+tpl/perlcrypt/XS.pm
+tpl/xscrypt/XS.pm
+lib/Crypt/PasswdMD5/XS.pm
+XS.xs
+test.pl
