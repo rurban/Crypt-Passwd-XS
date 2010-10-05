@@ -1,6 +1,5 @@
 sha256crypt.o
-sha512crypt
-md5crypt
+sha512crypt.o
 md5crypt.o
 md5.o
 des.o
