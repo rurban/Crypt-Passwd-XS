@@ -33,7 +33,7 @@
 
 #include "md5crypt.h"
 
-MODULE = Crypt::PasswdMD5::XS PACKAGE = Crypt::PasswdMD5::XS
+MODULE = Crypt::Passwd::XS PACKAGE = Crypt::Passwd::XS
 
 SV*
 unix_md5_crypt(pw,salt)

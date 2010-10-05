@@ -4,7 +4,7 @@ INSTALL
 MANIFEST
 Makefile.PL
 README
-lib/Crypt/PasswdMD5/XS.pm
+lib/Crypt/Passwd/XS.pm
 md5.c
 md5.h
 md5crypt.c
