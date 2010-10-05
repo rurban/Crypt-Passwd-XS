@@ -4,8 +4,10 @@ INSTALL
 MANIFEST
 Makefile.PL
 README
-tpl/perlcrypt/XS.pm
-tpl/xscrypt/XS.pm
 lib/Crypt/PasswdMD5/XS.pm
+md5.c
+md5.h
+md5crypt.c
+md5crypt.h
 XS.xs
 test.pl
