@@ -9,6 +9,8 @@ md5.c
 md5.h
 md5crypt.c
 md5crypt.h
+des.c
+des.h
 XS.xs
 t/00_module_load.t
 t/01_md5.t
