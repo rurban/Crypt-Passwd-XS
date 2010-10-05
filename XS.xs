@@ -30,6 +30,7 @@
 
 #include "md5crypt.h"
 #include "des.h"
+#include "sha256crypt.h"
 
 MODULE = Crypt::Passwd::XS PACKAGE = Crypt::Passwd::XS
 
@@ -62,6 +63,24 @@ unix_des_crypt(pw,salt)
 	
 	CODE:
 		cryptpw = crypt_des( SvPVX(pw), SvPVX(salt) );
+		if (cryptpw != NULL) {
+			RETVAL = newSVpv(cryptpw,0);
+		}
+
+	OUTPUT:
+		RETVAL
+
+SV*
+unix_sha256_crypt(pw,salt)
+	SV *pw;
+	SV *salt; 
+
+	INIT:
+		char *cryptpw = NULL;
+        	RETVAL = &PL_sv_undef;
+	
+	CODE:
+		cryptpw = sha256_crypt( SvPVX(pw), SvPVX(salt) );
 		if (cryptpw != NULL) {
 			RETVAL = newSVpv(cryptpw,0);
 		}
