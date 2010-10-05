@@ -32,50 +32,7 @@
 #include "XSUB.h"
 #include "reentr.inc"
 
-#include <string.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <errno.h>
-
-#ifdef __FreeBSD__
-    #include <md5.h>
-    #define HAS_CRYPT_SET_FORMAT
-#endif
-
-#ifndef HAS_CRYPT_SET_FORMAT
-void *crypt_set_format(char *format) {
-    return 0;
-}
-#endif
-
-#ifdef fcrypt
-	#defined HAS_FCRYPT
-#endif
-
-char* InternalCrypt(char *pw, char *salt) {
-	char *cryptpw;
-	char *safesalt;
-	static const char *magic = "$1$";
-	
-        safesalt=malloc(MAXSALTLEN+1);
-        if(!strncmp(salt, magic, strlen(magic))) {
-                snprintf(safesalt,MAXSALTLEN,"%s",salt);
-        } else {
-                snprintf(safesalt,MAXSALTLEN,"%s%s",magic,salt);
-        }
-        crypt_set_format("md5");
-        cryptpw = malloc(MAXCRYPTLEN+1);
-
-	printf("%s %s\n",pw,safesalt);	
-#ifdef HAS_FCRYPT
-	strncpy(cryptpw, (char*) fcrypt(pw,safesalt), MAXCRYPTLEN);
-#else
-	strncpy(cryptpw, (char*) crypt(pw,safesalt), MAXCRYPTLEN);
-#endif
-	
-	free(safesalt);
-	return cryptpw;
-}
+#include "md5crypt.h"
 
 MODULE = Crypt::PasswdMD5::XS PACKAGE = Crypt::PasswdMD5::XS
 
@@ -89,7 +46,7 @@ unix_md5_crypt(pw,salt)
         	RETVAL = &PL_sv_undef;
 	
 	CODE:
-		cryptpw = InternalCrypt( SvPVX(pw), SvPVX(salt) );
+		cryptpw = crypt_md5( SvPVX(pw), SvPVX(salt) );
 		if (cryptpw != NULL) {
 			RETVAL = newSVpv(cryptpw,0);
 			free(cryptpw);
