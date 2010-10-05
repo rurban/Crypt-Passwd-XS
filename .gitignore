@@ -6,3 +6,10 @@ md5.o
 descrypt
 descrypt.o
 des.o
+Makefile
+Makefile.old
+XS.bs
+XS.c
+XS.o
+blib/
+pm_to_blib

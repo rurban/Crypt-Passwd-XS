@@ -30,7 +30,6 @@
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
-#include "reentr.inc"
 
 #include "md5crypt.h"
 
@@ -49,7 +48,6 @@ unix_md5_crypt(pw,salt)
 		cryptpw = crypt_md5( SvPVX(pw), SvPVX(salt) );
 		if (cryptpw != NULL) {
 			RETVAL = newSVpv(cryptpw,0);
-			free(cryptpw);
 		}
 
 	OUTPUT:
