@@ -24,14 +24,12 @@
  * SUCH DAMAGE.
  */
 
-#define MAXSALTLEN  12
-#define MAXCRYPTLEN 256
-
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
 
 #include "md5crypt.h"
+#include "des.h"
 
 MODULE = Crypt::Passwd::XS PACKAGE = Crypt::Passwd::XS
 
@@ -46,6 +44,24 @@ unix_md5_crypt(pw,salt)
 	
 	CODE:
 		cryptpw = crypt_md5( SvPVX(pw), SvPVX(salt) );
+		if (cryptpw != NULL) {
+			RETVAL = newSVpv(cryptpw,0);
+		}
+
+	OUTPUT:
+		RETVAL
+
+SV*
+unix_des_crypt(pw,salt)
+	SV *pw;
+	SV *salt; 
+
+	INIT:
+		char *cryptpw = NULL;
+        	RETVAL = &PL_sv_undef;
+	
+	CODE:
+		cryptpw = crypt_des( SvPVX(pw), SvPVX(salt) );
 		if (cryptpw != NULL) {
 			RETVAL = newSVpv(cryptpw,0);
 		}
