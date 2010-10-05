@@ -10,4 +10,5 @@ md5.h
 md5crypt.c
 md5crypt.h
 XS.xs
-test.pl
+t/00_module_load.t
+t/01_md5.t
