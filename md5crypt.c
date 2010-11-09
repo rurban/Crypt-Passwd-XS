@@ -20,6 +20,8 @@
  * UNIX password
  */
 
+#define MD5_SIZE 16
+
 char *
 crypt_md5(const char *pw, const char *salt)
 {
@@ -33,7 +35,7 @@ crypt_md5(const char *pw, const char *salt)
 	static const char *sp,*ep;
 	unsigned char	final[MD5_SIZE];
 	int sl,pl,i;
-	MD5_CTX	ctx,ctx1;
+	md5_state_t ctx,ctx1;
 	unsigned long l;
 
 	/* Refine the Salt first */
@@ -50,25 +52,25 @@ crypt_md5(const char *pw, const char *salt)
 	/* get the length of the true salt */
 	sl = ep - sp;
 
-	MD5Init(&ctx);
+	md5_init(&ctx);
 
 	/* The password first, since that is what is most unknown */
-	MD5Update(&ctx,pw,strlen(pw));
+	md5_append(&ctx,pw,strlen(pw));
 
 	/* Then our magic string */
-	MD5Update(&ctx,magic,strlen(magic));
+	md5_append(&ctx,magic,strlen(magic));
 
 	/* Then the raw salt */
-	MD5Update(&ctx,sp,sl);
+	md5_append(&ctx,sp,sl);
 
 	/* Then just as many characters of the MD5(pw,salt,pw) */
-	MD5Init(&ctx1);
-	MD5Update(&ctx1,pw,strlen(pw));
-	MD5Update(&ctx1,sp,sl);
-	MD5Update(&ctx1,pw,strlen(pw));
-	MD5Final(final,&ctx1);
+	md5_init(&ctx1);
+	md5_append(&ctx1,pw,strlen(pw));
+	md5_append(&ctx1,sp,sl);
+	md5_append(&ctx1,pw,strlen(pw));
+	md5_finish(&ctx1, final);
 	for(pl = strlen(pw); pl > 0; pl -= MD5_SIZE)
-		MD5Update(&ctx,final,pl>MD5_SIZE ? MD5_SIZE : pl);
+		md5_append(&ctx,final,pl>MD5_SIZE ? MD5_SIZE : pl);
 
 	/* Don't leave anything around in vm they could use. */
 	memset(final,0,sizeof final);
@@ -76,16 +78,16 @@ crypt_md5(const char *pw, const char *salt)
 	/* Then something really weird... */
 	for (i = strlen(pw); i ; i >>= 1)
 		if(i&1)
-		    MD5Update(&ctx, final, 1);
+		    md5_append(&ctx, final, 1);
 		else
-		    MD5Update(&ctx, pw, 1);
+		    md5_append(&ctx, pw, 1);
 
 	/* Now make the output string */
 	strcpy(passwd,magic);
 	strncat(passwd,sp,sl);
 	strcat(passwd,"$");
 
-	MD5Final(final,&ctx);
+	md5_finish(&ctx,final);
 
 	/*
 	 * and now, just to make sure things don't run too fast
@@ -93,23 +95,23 @@ crypt_md5(const char *pw, const char *salt)
 	 * need 30 seconds to build a 1000 entry dictionary...
 	 */
 	for(i=0;i<1000;i++) {
-		MD5Init(&ctx1);
+		md5_init(&ctx1);
 		if(i & 1)
-			MD5Update(&ctx1,pw,strlen(pw));
+			md5_append(&ctx1,pw,strlen(pw));
 		else
-			MD5Update(&ctx1,final,MD5_SIZE);
+			md5_append(&ctx1,final,MD5_SIZE);
 
 		if(i % 3)
-			MD5Update(&ctx1,sp,sl);
+			md5_append(&ctx1,sp,sl);
 
 		if(i % 7)
-			MD5Update(&ctx1,pw,strlen(pw));
+			md5_append(&ctx1,pw,strlen(pw));
 
 		if(i & 1)
-			MD5Update(&ctx1,final,MD5_SIZE);
+			md5_append(&ctx1,final,MD5_SIZE);
 		else
-			MD5Update(&ctx1,pw,strlen(pw));
-		MD5Final(final,&ctx1);
+			md5_append(&ctx1,pw,strlen(pw));
+		md5_finish(&ctx1,final);
 	}
 
 	p = passwd + strlen(passwd);
@@ -132,4 +134,49 @@ crypt_md5(const char *pw, const char *salt)
 	memset(final,0,sizeof final);
 
 	return passwd;
+}
+
+/*
+ * Copyright (c) 1999
+ *      University of California.  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. Neither the name of the author nor the names of any co-contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY CONTRIBUTORS ``AS IS'' AND ANY EXPRESS
+ * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+ * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+ * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+ * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * $FreeBSD: src/lib/libcrypt/misc.c,v 1.1 1999/09/20 12:45:49 markm Exp $
+ * $DragonFly: src/lib/libcrypt/misc.c,v 1.3 2005/08/04 17:27:09 drhodus Exp $
+ *
+ */
+
+static unsigned char itoa64[] =		/* 0 ... 63 => ascii - 64 */
+	"./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+void
+_crypt_to64(char *s, unsigned long v, int n)
+{
+	while (--n >= 0) {
+		*s++ = itoa64[v&0x3f];
+		v >>= 6;
+	}
 }
