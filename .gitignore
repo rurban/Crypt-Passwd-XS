@@ -1,6 +1,7 @@
 sha256crypt.o
 sha512crypt.o
 md5crypt.o
+crypt_to64.o
 md5.o
 des.o
 Makefile
