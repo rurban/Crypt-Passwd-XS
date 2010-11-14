@@ -1,6 +1,8 @@
 Copyright (c) 2010 cPanel, Inc.
 
-This software is licensed under the same terms as Perl itself.
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself, either Perl version 5.10.1 or,
+at your option, any later version of Perl 5 you may have available.
 
 The following files are adapted from other sources (primarily DragonFly BSD.)
 See the copyright notices in these files for full details:
