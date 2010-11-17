@@ -62,7 +62,6 @@
 #include <sys/param.h>
 #include <pwd.h>
 #include <string.h>
-#include "crypt.h"
 #include <arpa/inet.h>
 
 #define     _PASSWORD_EFMT1         '_'     /* extended encryption format */
