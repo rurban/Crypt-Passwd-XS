@@ -4,6 +4,7 @@
     - Update Makefile.PL
     - Fix byte order detection
     - Fix typo in POD example
+    - Fix test messages is 05_combined.t
 
 0.4  2010-11-09  John Lightsey <jd@cpanel.net>
     - Initial public release
