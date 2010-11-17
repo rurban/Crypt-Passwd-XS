@@ -5,7 +5,6 @@
 #define _GNU_SOURCE
 #endif
 
-#include <endian.h>
 #include <errno.h>
 #include <limits.h>
 #include <stdint.h>
@@ -28,7 +27,7 @@ struct sha256_ctx
 };
 
 
-#if __BYTE_ORDER == __LITTLE_ENDIAN
+#ifdef BO_LITTLE_ENDIAN
 # define SWAP(n) \
     (((n) << 24) | (((n) & 0xff00) << 8) | (((n) >> 8) & 0xff00) | ((n) >> 24))
 #else
