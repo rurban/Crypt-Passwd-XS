@@ -24,7 +24,11 @@ my %CFG = (
 );
 
 if ($Config{"byteorder"} =~ /^1234/) {
-    $CFG{'DEFINE'} = '-DARCH_IS_BIG_ENDIAN=0';
+    $CFG{'DEFINE'} .= ' -DARCH_IS_BIG_ENDIAN=0';
+}
+
+if ($^O =~ /^MSWin/i) {
+    $CFG{'DEFINE'} .= ' -DWINDOWS';
 }
 
 WriteMakefile(%CFG);

@@ -1,3 +1,6 @@
+0.503  2010-11-17  John Lightsey <jd@cpanel.net>
+    - Fix Win32 build, thanks toddr (rt 63098)
+
 0.502  2010-11-17  John Lightsey <jd@cpanel.net>
     - Remove usage of strpncpy() from sha256crypt.c and sha512crypt.c
     - Remove usage of stdint.h from sha256crypt.c and sha512crypt.c

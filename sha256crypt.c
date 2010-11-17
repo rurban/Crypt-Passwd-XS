@@ -14,6 +14,16 @@
 #include <sys/param.h>
 #include <sys/types.h>
 
+#ifndef MIN
+#define MIN(a,b) ( (a) > (b) ? (b) : (a) )
+#endif
+#ifndef MAX
+#define MAX(a,b) ( (a) > (b) ? (a) : (b) )
+#endif
+
+#ifdef WINDOWS
+typedef unsigned int u_int32_t;
+#endif
 
 /* Structure to save state of computation between the single steps.  */
 struct sha256_ctx

@@ -13,6 +13,17 @@
 #include <sys/param.h>
 #include <sys/types.h>
 
+#ifndef MIN
+#define MIN(a,b) ( (a) > (b) ? (b) : (a) )
+#endif
+#ifndef MAX
+#define MAX(a,b) ( (a) > (b) ? (a) : (b) )
+#endif
+
+#ifdef WINDOWS
+typedef unsigned long long u_int64_t;
+#endif
+
 /* Structure to save state of computation between the single steps.  */
 struct sha512_ctx
 {

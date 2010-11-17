@@ -60,9 +60,13 @@
  */
 #include <sys/types.h>
 #include <sys/param.h>
-#include <pwd.h>
 #include <string.h>
 #include <arpa/inet.h>
+
+#ifdef WINDOWS
+#include <winsock2.h>
+typedef unsigned int u_int32_t;
+#endif
 
 #define     _PASSWORD_EFMT1         '_'     /* extended encryption format */
 
@@ -561,11 +565,13 @@ do_des(	u_int32_t l_in, u_int32_t r_in, u_int32_t *l_out, u_int32_t *r_out, int 
 	return(0);
 }
 
+
+
 static int
 des_cipher(const u_char *in, u_char *out, long salt, int count)
 {
-	const uint32_t	*in32;
-	uint32_t	l_out, r_out, rawl, rawr, *out32;
+	const u_int32_t	*in32;
+	u_int32_t	l_out, r_out, rawl, rawr, *out32;
 	int		retval;
 
 	if (!des_initialised)
@@ -573,8 +579,8 @@ des_cipher(const u_char *in, u_char *out, long salt, int count)
 
 	setup_salt(salt);
 
-	in32 = (const uint32_t *)in;
-	out32 = (uint32_t *)out;
+	in32 = (const u_int32_t *)in;
+	out32 = (u_int32_t *)out;
 
 	rawl = ntohl(*in32++);
 	rawr = ntohl(*in32);

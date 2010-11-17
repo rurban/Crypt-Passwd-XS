@@ -15,7 +15,6 @@
 #include <string.h>
 #include "md5.h"
 #include "crypt_to64.h"
-#include <err.h>
 
 /*
  * UNIX password
