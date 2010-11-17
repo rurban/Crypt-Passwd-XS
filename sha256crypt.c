@@ -7,7 +7,6 @@
 
 #include <errno.h>
 #include <limits.h>
-#include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,11 +18,11 @@
 /* Structure to save state of computation between the single steps.  */
 struct sha256_ctx
 {
-  uint32_t H[8];
+  u_int32_t H[8];
 
-  uint32_t total[2];
-  uint32_t buflen;
-  char buffer[128];	/* NB: always correctly aligned for uint32_t.  */
+  u_int32_t total[2];
+  u_int32_t buflen;
+  char buffer[128];	/* NB: always correctly aligned for u_int32_t.  */
 };
 
 
@@ -41,7 +40,7 @@ static const unsigned char fillbuf[64] = { 0x80, 0 /* , 0, 0, ...  */ };
 
 
 /* Constants for SHA256 from FIPS 180-2:4.2.2.  */
-static const uint32_t K[64] =
+static const u_int32_t K[64] =
   {
     0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
     0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
@@ -67,16 +66,16 @@ static const uint32_t K[64] =
 static void
 sha256_process_block (const void *buffer, size_t len, struct sha256_ctx *ctx)
 {
-  const uint32_t *words = buffer;
-  size_t nwords = len / sizeof (uint32_t);
-  uint32_t a = ctx->H[0];
-  uint32_t b = ctx->H[1];
-  uint32_t c = ctx->H[2];
-  uint32_t d = ctx->H[3];
-  uint32_t e = ctx->H[4];
-  uint32_t f = ctx->H[5];
-  uint32_t g = ctx->H[6];
-  uint32_t h = ctx->H[7];
+  const u_int32_t *words = buffer;
+  size_t nwords = len / sizeof (u_int32_t);
+  u_int32_t a = ctx->H[0];
+  u_int32_t b = ctx->H[1];
+  u_int32_t c = ctx->H[2];
+  u_int32_t d = ctx->H[3];
+  u_int32_t e = ctx->H[4];
+  u_int32_t f = ctx->H[5];
+  u_int32_t g = ctx->H[6];
+  u_int32_t h = ctx->H[7];
 
   /* First increment the byte count.  FIPS 180-2 specifies the possible
      length of the file up to 2^64 bits.  Here we only compute the
@@ -89,15 +88,15 @@ sha256_process_block (const void *buffer, size_t len, struct sha256_ctx *ctx)
      the loop.  */
   while (nwords > 0)
     {
-      uint32_t W[64];
-      uint32_t a_save = a;
-      uint32_t b_save = b;
-      uint32_t c_save = c;
-      uint32_t d_save = d;
-      uint32_t e_save = e;
-      uint32_t f_save = f;
-      uint32_t g_save = g;
-      uint32_t h_save = h;
+      u_int32_t W[64];
+      u_int32_t a_save = a;
+      u_int32_t b_save = b;
+      u_int32_t c_save = c;
+      u_int32_t d_save = d;
+      u_int32_t e_save = e;
+      u_int32_t f_save = f;
+      u_int32_t g_save = g;
+      u_int32_t h_save = h;
       unsigned int t;
 
       /* Operators defined in FIPS 180-2:4.1.2.  */
@@ -124,8 +123,8 @@ sha256_process_block (const void *buffer, size_t len, struct sha256_ctx *ctx)
       /* The actual computation according to FIPS 180-2:6.2.2 step 3.  */
       for (t = 0; t < 64; ++t)
 	{
-	  uint32_t T1 = h + S1 (e) + Ch (e, f, g) + K[t] + W[t];
-	  uint32_t T2 = S0 (a) + Maj (a, b, c);
+	  u_int32_t T1 = h + S1 (e) + Ch (e, f, g) + K[t] + W[t];
+	  u_int32_t T2 = S0 (a) + Maj (a, b, c);
 	  h = g;
 	  g = f;
 	  f = e;
@@ -191,7 +190,7 @@ static void *
 sha256_finish_ctx (struct sha256_ctx *ctx, void *resbuf)
 {
   /* Take yet unprocessed bytes into account.  */
-  uint32_t bytes = ctx->buflen;
+  u_int32_t bytes = ctx->buflen;
   size_t pad;
   unsigned int i;
 
@@ -204,8 +203,8 @@ sha256_finish_ctx (struct sha256_ctx *ctx, void *resbuf)
   memcpy (&ctx->buffer[bytes], fillbuf, pad);
 
   /* Put the 64-bit file length in *bits* at the end of the buffer.  */
-  *(uint32_t *) &ctx->buffer[bytes + pad + 4] = SWAP (ctx->total[0] << 3);
-  *(uint32_t *) &ctx->buffer[bytes + pad] = SWAP ((ctx->total[1] << 3) |
+  *(u_int32_t *) &ctx->buffer[bytes + pad + 4] = SWAP (ctx->total[0] << 3);
+  *(u_int32_t *) &ctx->buffer[bytes + pad] = SWAP ((ctx->total[1] << 3) |
 						  (ctx->total[0] >> 29));
 
   /* Process last bytes.  */
@@ -213,7 +212,7 @@ sha256_finish_ctx (struct sha256_ctx *ctx, void *resbuf)
 
   /* Put result from CTX in first 32 bytes following RESBUF.  */
   for (i = 0; i < 8; ++i)
-    ((uint32_t *) resbuf)[i] = SWAP (ctx->H[i]);
+    ((u_int32_t *) resbuf)[i] = SWAP (ctx->H[i]);
 
   return resbuf;
 }
@@ -252,9 +251,9 @@ sha256_process_bytes (const void *buffer, size_t len, struct sha256_ctx *ctx)
 /* To check alignment gcc has an appropriate operator.  Other
    compilers don't.  */
 #if __GNUC__ >= 2
-# define UNALIGNED_P(p) (((uintptr_t) p) % __alignof__ (uint32_t) != 0)
+# define UNALIGNED_P(p) (((unsigned long) p) % __alignof__ (u_int32_t) != 0)
 #else
-# define UNALIGNED_P(p) (((uintptr_t) p) % sizeof (uint32_t) != 0)
+# define UNALIGNED_P(p) (((unsigned long) p) % sizeof (u_int32_t) != 0)
 #endif
       if (UNALIGNED_P (buffer))
 	while (len > 64)
@@ -314,9 +313,9 @@ static char *
 sha256_crypt_r (const char *key, const char *salt, char *buffer, int buflen)
 {
   unsigned char alt_result[32]
-    __attribute__ ((__aligned__ (__alignof__ (uint32_t))));
+    __attribute__ ((__aligned__ (__alignof__ (u_int32_t))));
   unsigned char temp_result[32]
-    __attribute__ ((__aligned__ (__alignof__ (uint32_t))));
+    __attribute__ ((__aligned__ (__alignof__ (u_int32_t))));
   struct sha256_ctx ctx;
   struct sha256_ctx alt_ctx;
   size_t salt_len;
@@ -354,21 +353,21 @@ sha256_crypt_r (const char *key, const char *salt, char *buffer, int buflen)
   salt_len = MIN (strcspn (salt, "$"), SALT_LEN_MAX);
   key_len = strlen (key);
 
-  if ((key - (char *) 0) % __alignof__ (uint32_t) != 0)
+  if ((key - (char *) 0) % __alignof__ (u_int32_t) != 0)
     {
-      char *tmp = (char *) alloca (key_len + __alignof__ (uint32_t));
+      char *tmp = (char *) alloca (key_len + __alignof__ (u_int32_t));
       key = copied_key =
-	memcpy (tmp + __alignof__ (uint32_t)
-		- (tmp - (char *) 0) % __alignof__ (uint32_t),
+	memcpy (tmp + __alignof__ (u_int32_t)
+		- (tmp - (char *) 0) % __alignof__ (u_int32_t),
 		key, key_len);
     }
 
-  if ((salt - (char *) 0) % __alignof__ (uint32_t) != 0)
+  if ((salt - (char *) 0) % __alignof__ (u_int32_t) != 0)
     {
-      char *tmp = (char *) alloca (salt_len + __alignof__ (uint32_t));
+      char *tmp = (char *) alloca (salt_len + __alignof__ (u_int32_t));
       salt = copied_salt =
-	memcpy (tmp + __alignof__ (uint32_t)
-		- (tmp - (char *) 0) % __alignof__ (uint32_t),
+	memcpy (tmp + __alignof__ (u_int32_t)
+		- (tmp - (char *) 0) % __alignof__ (u_int32_t),
 		salt, salt_len);
     }
 
@@ -492,8 +491,8 @@ sha256_crypt_r (const char *key, const char *salt, char *buffer, int buflen)
 
   if (rounds_custom)
     {
-      int n = snprintf (cp, MAX (0, buflen), "%s%zu$",
-			sha256_rounds_prefix, rounds);
+      int n = snprintf (cp, MAX (0, buflen), "%s%u$",
+			sha256_rounds_prefix, (unsigned int)rounds);
       cp += n;
       buflen -= n;
     }
