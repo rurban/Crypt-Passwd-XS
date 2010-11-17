@@ -518,7 +518,8 @@ sha512_crypt_r (const char *key, const char *salt, char *buffer, int buflen)
 
   /* Now we can construct the result string.  It consists of three
      parts.  */
-  cp = stpncpy (buffer, sha512_salt_prefix, MAX (0, buflen));
+  cp = strncpy (buffer, sha512_salt_prefix, MAX (0, buflen));
+  cp += MIN(strlen(sha512_salt_prefix), MAX (0, buflen));
   buflen -= sizeof (sha512_salt_prefix) - 1;
 
   if (rounds_custom)
@@ -529,7 +530,8 @@ sha512_crypt_r (const char *key, const char *salt, char *buffer, int buflen)
       buflen -= n;
     }
 
-  cp = stpncpy (cp, salt, MIN ((size_t) MAX (0, buflen), salt_len));
+  cp = strncpy (cp, salt, MIN ((size_t) MAX (0, buflen), salt_len));
+  cp += MIN(strlen(salt), MIN ((size_t) MAX (0, buflen), salt_len));
   buflen -= MIN ((size_t) MAX (0, buflen), salt_len);
 
   if (buflen > 0)
