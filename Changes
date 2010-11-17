@@ -1,5 +1,6 @@
 0.5  2010-11-16  John Lightsey <jd@cpanel.net>
     - Remove useless include of crypt.h in des.c
+    - Remove usage of mempcpy() from sha256crypt.c and sha512crypt.c
 
 0.4  2010-11-09  John Lightsey <jd@cpanel.net>
     - Initial public release
