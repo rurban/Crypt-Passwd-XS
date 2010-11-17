@@ -26,7 +26,7 @@ struct sha512_ctx
 };
 
 
-#ifdef BO_LITTLE_ENDIAN
+#if defined(ARCH_IS_BIG_ENDIAN) && ARCH_IS_BIG_ENDIAN == 0
 # define SWAP(n) \
   (((n) << 56)					\
    | (((n) & 0xff00) << 40)			\

@@ -27,8 +27,8 @@ struct sha256_ctx
 };
 
 
-#ifdef BO_LITTLE_ENDIAN
-# define SWAP(n) \
+#if defined(ARCH_IS_BIG_ENDIAN) && ARCH_IS_BIG_ENDIAN == 0
+# define SWAP(n)                                                        \
     (((n) << 24) | (((n) & 0xff00) << 8) | (((n) >> 8) & 0xff00) | ((n) >> 24))
 #else
 # define SWAP(n) (n)

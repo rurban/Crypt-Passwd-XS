@@ -24,7 +24,7 @@ my %CFG = (
 );
 
 if ($Config{"byteorder"} =~ /^1234/) {
-    $CFG{'DEFINE'} = '-DBO_LITTLE_ENDIAN';
+    $CFG{'DEFINE'} = '-DARCH_IS_BIG_ENDIAN=0';
 }
 
 WriteMakefile(%CFG);
