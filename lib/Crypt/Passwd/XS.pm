@@ -1,6 +1,6 @@
 package Crypt::Passwd::XS;
 
-our $VERSION = '0.4';
+our $VERSION = '0.501';
 
 require XSLoader;
 XSLoader::load( 'Crypt::Passwd::XS', $VERSION );
@@ -40,8 +40,8 @@ Crypt::Passwd::XS - Full XS implementation of common crypt() algorythms
 
   use Crypt::Passwd::XS;
 
-  my $plaintext = "secret";
-  my $salt      = "$1$1234";
+  my $plaintext = 'secret';
+  my $salt      = '$1$1234';
   my $crypted   = Crypt::Passwd::XS::crypt( $plaintext, $salt );
 
 =head1 DESCRIPTION
