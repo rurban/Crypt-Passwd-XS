@@ -291,9 +291,9 @@ sha512_process_bytes (const void *buffer, size_t len, struct sha512_ctx *ctx)
 /* To check alignment gcc has an appropriate operator.  Other
    compilers don't.  */
 # if __GNUC__ >= 2
-#  define UNALIGNED_P(p) (((uintptr_t) p) % __alignof__ (u_int64_t) != 0)
+#  define UNALIGNED_P(p) (((size_t) p) % __alignof__ (u_int64_t) != 0)
 # else
-#  define UNALIGNED_P(p) (((uintptr_t) p) % sizeof (u_int64_t) != 0)
+#  define UNALIGNED_P(p) (((size_t) p) % sizeof (u_int64_t) != 0)
 # endif
       if (UNALIGNED_P (buffer))
 	while (len > 128)
