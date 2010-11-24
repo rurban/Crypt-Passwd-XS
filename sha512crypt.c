@@ -6,12 +6,16 @@
 #endif
 #include <errno.h>
 #include <limits.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/param.h>
 #include <sys/types.h>
+
+/* To avoid stdbool.h */
+#define bool char
+#define true 1
+#define false 0
 
 #ifndef MIN
 #define MIN(a,b) ( (a) > (b) ? (b) : (a) )

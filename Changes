@@ -1,3 +1,6 @@
+0.505  2010-11-23  John Lightsey <jd@cpanel.net>
+    - Remove usage of stdbool.h to fix compile on Solaris
+
 0.504  2010-11-19  John Lightsey <jd@cpanel.net>
     - Fix compile of sha512crypt.c on systems with no uintptr_t type
 

@@ -1,6 +1,6 @@
 package Crypt::Passwd::XS;
 
-our $VERSION = '0.504';
+our $VERSION = '0.505';
 
 require XSLoader;
 XSLoader::load( 'Crypt::Passwd::XS', $VERSION );
