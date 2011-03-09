@@ -201,7 +201,7 @@ static u_char	ascii64[] =
 /*	  0123456789012345678901234567890123456789012345678901234567890123 */
 
 static INLINE int
-ascii_to_bin(char ch)
+cpx_ascii_to_bin(char ch)
 {
 	if (ch > 'z')
 		return(0);
@@ -219,7 +219,7 @@ ascii_to_bin(char ch)
 }
 
 static void
-des_init()
+cpx_des_init()
 {
 	int	i, j, b, k, inbit, obit;
 	u_int32_t	*p, *il, *ir, *fl, *fr;
@@ -349,7 +349,7 @@ des_init()
 }
 
 static void
-setup_salt(long salt)
+cpx_setup_salt(long salt)
 {
 	u_int32_t	obit, saltbit;
 	int		i;
@@ -370,13 +370,13 @@ setup_salt(long salt)
 }
 
 static int
-des_setkey(u_char *key)
+cpx_des_setkey(u_char *key)
 {
 	u_int32_t	k0, k1, rawkey0, rawkey1;
 	int		shifts, round;
 
 	if (!des_initialised)
-		des_init();
+		cpx_des_init();
 
 	rawkey0 = ntohl(*(u_int32_t *) key);
 	rawkey1 = ntohl(*(u_int32_t *) (key + 4));
@@ -450,7 +450,7 @@ des_setkey(u_char *key)
 }
 
 static int
-do_des(	u_int32_t l_in, u_int32_t r_in, u_int32_t *l_out, u_int32_t *r_out, int count)
+cpx_do_des(	u_int32_t l_in, u_int32_t r_in, u_int32_t *l_out, u_int32_t *r_out, int count)
 {
 	/*
 	 *	l_in, r_in, l_out, and r_out are in pseudo-"big-endian" format.
@@ -568,16 +568,16 @@ do_des(	u_int32_t l_in, u_int32_t r_in, u_int32_t *l_out, u_int32_t *r_out, int 
 
 
 static int
-des_cipher(const u_char *in, u_char *out, long salt, int count)
+cpx_des_cipher(const u_char *in, u_char *out, long salt, int count)
 {
 	const u_int32_t	*in32;
 	u_int32_t	l_out, r_out, rawl, rawr, *out32;
 	int		retval;
 
 	if (!des_initialised)
-		des_init();
+		cpx_des_init();
 
-	setup_salt(salt);
+	cpx_setup_salt(salt);
 
 	in32 = (const u_int32_t *)in;
 	out32 = (u_int32_t *)out;
@@ -585,7 +585,7 @@ des_cipher(const u_char *in, u_char *out, long salt, int count)
 	rawl = ntohl(*in32++);
 	rawr = ntohl(*in32);
 
-	retval = do_des(rawl, rawr, &l_out, &r_out, count);
+	retval = cpx_do_des(rawl, rawr, &l_out, &r_out, count);
 
 	*out32++ = htonl(l_out);
 	*out32 = htonl(r_out);
@@ -593,7 +593,7 @@ des_cipher(const u_char *in, u_char *out, long salt, int count)
 }
 
 char *
-crypt_des(const char *key, const char *setting)
+cpx_crypt_des(const char *key, const char *setting)
 {
 	int		i;
 	u_int32_t	count, salt, l, r0, r1, keybuf[2];
@@ -601,7 +601,7 @@ crypt_des(const char *key, const char *setting)
 	static u_char	output[21];
 
 	if (!des_initialised)
-		des_init();
+		cpx_des_init();
 
 
 	/*
@@ -613,7 +613,7 @@ crypt_des(const char *key, const char *setting)
 		if ((*q++ = *key << 1))
 			key++;
 	}
-	if (des_setkey((u_char *) keybuf))
+	if (cpx_des_setkey((u_char *) keybuf))
 		return(NULL);
 
 	if (*setting == _PASSWORD_EFMT1) {
@@ -623,16 +623,16 @@ crypt_des(const char *key, const char *setting)
 		 *	key - unlimited characters
 		 */
 		for (i = 1, count = 0L; i < 5; i++)
-			count |= ascii_to_bin(setting[i]) << (i - 1) * 6;
+			count |= cpx_ascii_to_bin(setting[i]) << (i - 1) * 6;
 
 		for (i = 5, salt = 0L; i < 9; i++)
-			salt |= ascii_to_bin(setting[i]) << (i - 5) * 6;
+			salt |= cpx_ascii_to_bin(setting[i]) << (i - 5) * 6;
 
 		while (*key) {
 			/*
 			 * Encrypt the key with itself.
 			 */
-			if (des_cipher((u_char*)keybuf, (u_char*)keybuf, 0L, 1))
+			if (cpx_des_cipher((u_char*)keybuf, (u_char*)keybuf, 0L, 1))
 				return(NULL);
 			/*
 			 * And XOR with the next 8 characters of the key.
@@ -641,7 +641,7 @@ crypt_des(const char *key, const char *setting)
 			while (q - (u_char *) keybuf - 8 && *key)
 				*q++ ^= *key++ << 1;
 
-			if (des_setkey((u_char *) keybuf))
+			if (cpx_des_setkey((u_char *) keybuf))
 				return(NULL);
 		}
 		strncpy((char *) output, setting, 9);
@@ -664,11 +664,11 @@ crypt_des(const char *key, const char *setting)
 		count = 25;
 
         if ( setting[0] && setting[1] ) {
-            salt = (ascii_to_bin(setting[1]) << 6)
-                |  ascii_to_bin(setting[0]);
+            salt = (cpx_ascii_to_bin(setting[1]) << 6)
+                |  cpx_ascii_to_bin(setting[0]);
         } else {
-            salt = (ascii_to_bin(setting[0]) << 6)
-                |  ascii_to_bin(setting[0]);
+            salt = (cpx_ascii_to_bin(setting[0]) << 6)
+                |  cpx_ascii_to_bin(setting[0]);
         }
 
 		output[0] = setting[0];
@@ -682,11 +682,11 @@ crypt_des(const char *key, const char *setting)
 
 		p = output + 2;
 	}
-	setup_salt(salt);
+	cpx_setup_salt(salt);
 	/*
 	 * Do it.
 	 */
-	if (do_des(0L, 0L, &r0, &r1, count))
+	if (cpx_do_des(0L, 0L, &r0, &r1, count))
 		return(NULL);
 	/*
 	 * Now encode the result...

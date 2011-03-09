@@ -23,10 +23,10 @@ typedef char *(*crypt_function_t)(const char*, const char*);
 typedef enum { MD5 = 0, DES, SHA256, SHA512 } crypt_scheme_t;
 
 crypt_function_t crypt_function_map[] = {
-    crypt_md5,
-    crypt_des,
-    sha256_crypt,
-    sha512_crypt
+    cpx_crypt_md5,
+    cpx_crypt_des,
+    cpx_sha256_crypt,
+    cpx_sha512_crypt
 };
 
 /* This function performs all cleanup of input and calls the correct C crypt function */

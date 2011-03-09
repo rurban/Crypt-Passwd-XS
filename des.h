@@ -1,7 +1,7 @@
-#ifndef _des_h
-#define _des_h
+#ifndef des_h
+#define des_h
 
-char * crypt_des(const char *key, const char *setting);
+char * cpx_crypt_des(const char *key, const char *setting);
 
 #endif
 

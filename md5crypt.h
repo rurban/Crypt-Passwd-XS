@@ -10,9 +10,9 @@
  * $DragonFly: src/lib/libcrypt/crypt-md5.c,v 1.3 2005/08/04 17:27:09 drhodus Exp $
  */
 
-#ifndef _MD5CRYPT_H
-#define _MD5CRYPT_H
+#ifndef MD5CRYPT_H
+#define MD5CRYPT_H
 
-char *crypt_md5(const char *pw, const char *salt);
+char *cpx_crypt_md5(const char *pw, const char *salt);
 
-#endif /* _MD5CRYPT_H */
+#endif /* MD5CRYPT_H */

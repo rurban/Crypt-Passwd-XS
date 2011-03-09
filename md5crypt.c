@@ -23,7 +23,7 @@
 #define MD5_SIZE 16
 
 char *
-crypt_md5(const char *pw, const char *salt)
+cpx_crypt_md5(const char *pw, const char *salt)
 {
 	static char	*magic = "$1$";	/*
 					 * This string is magic for
