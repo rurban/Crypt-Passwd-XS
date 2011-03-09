@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2010 cPanel, Inc.
+ * Copyright (c) 2011 cPanel, Inc.
  * All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify
@@ -16,78 +16,86 @@
 #include "sha256crypt.h"
 #include "sha512crypt.h"
 
+
+typedef char *(*crypt_function_t)(const char*, const char*);
+
+/* The enum and map are in the same order for easy lookup */
+typedef enum { MD5 = 0, DES, SHA256, SHA512 } crypt_scheme_t;
+
+crypt_function_t crypt_function_map[] = {
+    crypt_md5,
+    crypt_des,
+    sha256_crypt,
+    sha512_crypt
+};
+
+/* This function performs all cleanup of input and calls the correct C crypt function */
+SV* _multi_crypt(crypt_scheme_t scheme, SV *pw, SV *salt) {
+    char *cryptpw_cstr = NULL;
+    char *pw_cstr = NULL;
+    char *salt_cstr = NULL;
+    SV* RETVAL = &PL_sv_undef;
+    if (SvPOK(pw)) {
+        pw_cstr = SvPVX(pw);
+    } else {
+        pw_cstr = "";
+    }
+    if (SvPOK(salt)) {
+        salt_cstr = SvPVX(salt);
+    } else {
+        salt_cstr = "";
+    }
+    cryptpw_cstr = crypt_function_map[scheme]( pw_cstr, salt_cstr );
+    if (cryptpw_cstr != NULL) {
+        RETVAL = newSVpv(cryptpw_cstr,0);
+    }
+    return RETVAL;
+}
+
 MODULE = Crypt::Passwd::XS PACKAGE = Crypt::Passwd::XS
 
 PROTOTYPES: ENABLE
 
 SV*
 unix_md5_crypt(pw,salt)
-	SV *pw;
-	SV *salt; 
+    SV *pw;
+    SV *salt;
 
-	INIT:
-		char *cryptpw = NULL;
-        	RETVAL = &PL_sv_undef;
-	
-	CODE:
-		cryptpw = crypt_md5( SvPVX(pw), SvPVX(salt) );
-		if (cryptpw != NULL) {
-			RETVAL = newSVpv(cryptpw,0);
-		}
+    CODE:
+        RETVAL = _multi_crypt(MD5, pw, salt);
 
-	OUTPUT:
-		RETVAL
+    OUTPUT:
+        RETVAL
 
 SV*
 unix_des_crypt(pw,salt)
-	SV *pw;
-	SV *salt; 
+    SV *pw;
+    SV *salt;
 
-	INIT:
-		char *cryptpw = NULL;
-        	RETVAL = &PL_sv_undef;
-	
-	CODE:
-		cryptpw = crypt_des( SvPVX(pw), SvPVX(salt) );
-		if (cryptpw != NULL) {
-			RETVAL = newSVpv(cryptpw,0);
-		}
+    CODE:
+        RETVAL = _multi_crypt(DES, pw, salt);
 
-	OUTPUT:
-		RETVAL
+    OUTPUT:
+        RETVAL
 
 SV*
 unix_sha256_crypt(pw,salt)
-	SV *pw;
-	SV *salt; 
+    SV *pw;
+    SV *salt; 
 
-	INIT:
-		char *cryptpw = NULL;
-        	RETVAL = &PL_sv_undef;
-	
-	CODE:
-		cryptpw = sha256_crypt( SvPVX(pw), SvPVX(salt) );
-		if (cryptpw != NULL) {
-			RETVAL = newSVpv(cryptpw,0);
-		}
+    CODE:
+        RETVAL = _multi_crypt(SHA256, pw, salt);
 
-	OUTPUT:
-		RETVAL
+    OUTPUT:
+        RETVAL
 
 SV*
 unix_sha512_crypt(pw,salt)
-	SV *pw;
-	SV *salt; 
+    SV *pw;
+    SV *salt; 
 
-	INIT:
-		char *cryptpw = NULL;
-        	RETVAL = &PL_sv_undef;
-	
-	CODE:
-		cryptpw = sha512_crypt( SvPVX(pw), SvPVX(salt) );
-		if (cryptpw != NULL) {
-			RETVAL = newSVpv(cryptpw,0);
-		}
+    CODE:
+        RETVAL = _multi_crypt(SHA512, pw, salt);
 
-	OUTPUT:
-		RETVAL
+    OUTPUT:
+        RETVAL

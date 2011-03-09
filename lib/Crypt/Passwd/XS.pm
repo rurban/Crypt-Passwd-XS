@@ -1,28 +1,29 @@
 package Crypt::Passwd::XS;
 
-our $VERSION = '0.505';
+our $VERSION = '0.506';
 
 require XSLoader;
 XSLoader::load( 'Crypt::Passwd::XS', $VERSION );
 
 sub crypt {
     my $password = shift;
-    my $salt = shift;
+    my $salt     = shift;
     return unless $salt;
-    my $crypt_type = substr($salt,0,3);
-    if ($crypt_type eq '$1$') {
-        return unix_md5_crypt($password, $salt);
+    my $crypt_type = substr( $salt, 0, 3 );
+    if ( $crypt_type eq '$1$' ) {
+        return unix_md5_crypt( $password, $salt );
     }
     elsif ( $crypt_type eq '$6$' ) {
-        return unix_sha512_crypt($password, $salt);
+        return unix_sha512_crypt( $password, $salt );
     }
     elsif ( $crypt_type eq '$5$' ) {
-        return unix_sha256_crypt($password, $salt);
+        return unix_sha256_crypt( $password, $salt );
     }
-    elsif (substr($salt,0,1) ne '$' ) {
-        return unix_des_crypt($password, $salt);
+    elsif ( substr( $salt, 0, 1 ) ne '$' ) {
+        return unix_des_crypt( $password, $salt );
     }
     else {
+
         # Unimplemented hashing scheme
         return;
     }
@@ -77,7 +78,7 @@ John Lightsey, E<lt>jd@cpanel.netE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2010 cPanel, Inc.
+Copyright (C) 2011 cPanel, Inc.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.10.1 or,

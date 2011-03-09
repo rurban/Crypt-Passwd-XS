@@ -663,8 +663,13 @@ crypt_des(const char *key, const char *setting)
 		 */
 		count = 25;
 
-		salt = (ascii_to_bin(setting[1]) << 6)
-		     |  ascii_to_bin(setting[0]);
+        if ( setting[0] && setting[1] ) {
+            salt = (ascii_to_bin(setting[1]) << 6)
+                |  ascii_to_bin(setting[0]);
+        } else {
+            salt = (ascii_to_bin(setting[0]) << 6)
+                |  ascii_to_bin(setting[0]);
+        }
 
 		output[0] = setting[0];
 		/*
