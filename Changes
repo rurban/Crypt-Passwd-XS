@@ -1,3 +1,8 @@
+0.600  2011-07-20  John Lightsey <jd@cpanel.net>
+    - Add support for Apache's apr1 crypt scheme.
+    - Fix warnings about conversion from char* to unsigned char*
+      in md5_append() calls.
+
 0.507  2011-03-09  John Lightsey <jd@cpanel.net>
     - Prefixed all implemetations of underlying crypt C functions with cpx_
       to avoid conflicts with libc builtin versions.

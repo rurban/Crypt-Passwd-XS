@@ -14,5 +14,6 @@
 #define MD5CRYPT_H
 
 char *cpx_crypt_md5(const char *pw, const char *salt);
+char *cpx_crypt_apr1(const char *pw, const char *salt);
 
 #endif /* MD5CRYPT_H */

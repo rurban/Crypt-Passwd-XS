@@ -1,6 +1,6 @@
 package Crypt::Passwd::XS;
 
-our $VERSION = '0.507';
+our $VERSION = '0.600';
 
 require XSLoader;
 XSLoader::load( 'Crypt::Passwd::XS', $VERSION );
@@ -21,6 +21,9 @@ sub crypt {
     }
     elsif ( substr( $salt, 0, 1 ) ne '$' ) {
         return unix_des_crypt( $password, $salt );
+    }
+    elsif ( substr( $salt, 0, 6 ) eq '$apr1$' ) {
+        return apache_md5_crypt( $password, $salt );
     }
     else {
 
@@ -57,6 +60,9 @@ The B<crypt()> function handles all supported crypt methods using the standard
 salt prefix system for determinging the crypt type.
 
 The B<unix_md5_crypt()> function performs a MD5 crypt regardless of the salt
+prefix.
+
+The B<apache_md5_crypt()> function performs a APR1 crypt regardless of the salt
 prefix.
 
 The B<unix_des_crypt()> funtion performs a traditional DES crypt regardless of

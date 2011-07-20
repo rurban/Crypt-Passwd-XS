@@ -20,10 +20,11 @@
 typedef char *(*crypt_function_t)(const char*, const char*);
 
 /* The enum and map are in the same order for easy lookup */
-typedef enum { MD5 = 0, DES, SHA256, SHA512 } crypt_scheme_t;
+typedef enum { MD5 = 0, APR1, DES, SHA256, SHA512 } crypt_scheme_t;
 
 crypt_function_t crypt_function_map[] = {
     cpx_crypt_md5,
+    cpx_crypt_apr1,
     cpx_crypt_des,
     cpx_sha256_crypt,
     cpx_sha512_crypt
@@ -63,6 +64,17 @@ unix_md5_crypt(pw,salt)
 
     CODE:
         RETVAL = _multi_crypt(MD5, pw, salt);
+
+    OUTPUT:
+        RETVAL
+
+SV*
+apache_md5_crypt(pw,salt)
+    SV *pw;
+    SV *salt;
+
+    CODE:
+        RETVAL = _multi_crypt(APR1, pw, salt);
 
     OUTPUT:
         RETVAL

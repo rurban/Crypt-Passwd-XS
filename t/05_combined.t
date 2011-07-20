@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More 'tests' => 24;
+use Test::More 'tests' => 25;
 use Crypt::Passwd::XS ();
 
 my $checks = [
@@ -10,8 +10,8 @@ my $checks = [
     [ 'test1234',            'test1234',                             'tesvSclXGCVNk',                                                                'DES' ],
     [ 'test1234',            'aa',                                   'aaGUTMncdkeWY',                                                                'DES' ],
     [ 'test1234',            'bb',                                   'bbO19gCe57B0E',                                                                'DES' ],
-    [ 'test1234',            '',                                     undef,                                                                             'DES' ],
-    [ 'test1234',            undef,                                  undef,                                                                             'DES' ],
+    [ 'test1234',            '',                                     undef,                                                                          'DES' ],
+    [ 'test1234',            undef,                                  undef,                                                                          'DES' ],
     [ '',                    'test1234',                             'texQN4goIMuj6',                                                                'DES' ],
     [ undef,                 'test1234',                             'texQN4goIMuj6',                                                                'DES' ],
     [ 'test1234',            'test1234',                             'tesvSclXGCVNk',                                                                'DES' ],
@@ -32,9 +32,10 @@ my $checks = [
         'a very much longer text to encrypt.  This one even stretches over morethan one line.',                                   '$6$rounds=1400$anotherlongsaltstring',
         '$6$rounds=1400$anotherlongsalts$POfYwTEok97VWcjxIiSOjiykti.o/pQs.wPvMxQ6Fm7I6IoYN3CmLs66x9t0oSwbtEW7o7UmJEiDwGqd8p4ur1', 'SHA512'
     ],
-    [ 'we have a short salt string but not a short password', '$6$rounds=77777$short',             '$6$rounds=77777$short$WuQyW2YR.hBNpjjRhpYD/ifIw05xdfeEyQoMxIXbkvr0gge1a1x3yRULJ5CCaUeOxFmtlcGZelFl5CxtgfiAc0',             'SHA512' ],
-    [ 'a short string',                                       '$6$rounds=123456$asaltof16chars..', '$6$rounds=123456$asaltof16chars..$BtCwjqMJGx5hrJhZywWvt0RLE8uZ4oPwcelCjmw2kSYu.Ec6ycULevoBK25fs2xXgMNrCzIMVcgEJAstJeonj1', 'SHA512' ],
-    [ 'the minimum number is still observed',                 '$6$rounds=10$roundstoolow',         '$6$rounds=1000$roundstoolow$kUMsbe306n21p9R.FRkW3IGn.S9NPN0x50YhH1xhLsPuWGsUSklZt58jaTfF4ZEQpyUNGc0dqbpBYYBaHHrsX.',       'SHA512' ],
+    [ 'we have a short salt string but not a short password', '$6$rounds=77777$short',                 '$6$rounds=77777$short$WuQyW2YR.hBNpjjRhpYD/ifIw05xdfeEyQoMxIXbkvr0gge1a1x3yRULJ5CCaUeOxFmtlcGZelFl5CxtgfiAc0',             'SHA512' ],
+    [ 'a short string',                                       '$6$rounds=123456$asaltof16chars..',     '$6$rounds=123456$asaltof16chars..$BtCwjqMJGx5hrJhZywWvt0RLE8uZ4oPwcelCjmw2kSYu.Ec6ycULevoBK25fs2xXgMNrCzIMVcgEJAstJeonj1', 'SHA512' ],
+    [ 'the minimum number is still observed',                 '$6$rounds=10$roundstoolow',             '$6$rounds=1000$roundstoolow$kUMsbe306n21p9R.FRkW3IGn.S9NPN0x50YhH1xhLsPuWGsUSklZt58jaTfF4ZEQpyUNGc0dqbpBYYBaHHrsX.',       'SHA512' ],
+    [ 'test1234',                                             '$apr1$test1234$/XUxRsbs/UKum2fGgxyhu/', '$apr1$test1234$/XUxRsbs/UKum2fGgxyhu/',                                                                                    'APR1' ],
 
 ];
 

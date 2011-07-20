@@ -23,14 +23,8 @@
 #define MD5_SIZE 16
 
 char *
-cpx_crypt_md5(const char *pw, const char *salt)
+_cpx_crypt_md5(const char *pw, const char *salt, const char* magic)
 {
-	static char	*magic = "$1$";	/*
-					 * This string is magic for
-					 * this algorithm.  Having
-					 * it this way, we can get
-					 * get better later on
-					 */
 	static char     passwd[120], *p;
 	static const char *sp,*ep;
 	unsigned char	final[MD5_SIZE];
@@ -134,5 +128,22 @@ cpx_crypt_md5(const char *pw, const char *salt)
 	memset(final,0,sizeof final);
 
 	return passwd;
+}
+
+/* For APR1 and MD5 crypt, the sole difference is the prefix string. */
+
+static const char* md5_magic = "$1$";
+static const char* apr1_magic= "$apr1$";
+
+char *
+cpx_crypt_apr1(const char *pw, const char *salt)
+{
+    return _cpx_crypt_md5(pw, salt, apr1_magic);
+}
+
+char *
+cpx_crypt_md5(const char *pw, const char *salt)
+{
+    return _cpx_crypt_md5(pw, salt, md5_magic);
 }
 
