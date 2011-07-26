@@ -38,7 +38,7 @@ __END__
 
 =head1 NAME
 
-Crypt::Passwd::XS - Full XS implementation of common crypt() algorythms
+Crypt::Passwd::XS - Full XS implementation of common crypt() algorithms
 
 =head1 SYNOPSIS
 

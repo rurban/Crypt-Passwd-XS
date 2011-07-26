@@ -24,3 +24,4 @@ t/02_des.t
 t/03_sha256.t
 t/04_sha512.t
 t/05_combined.t
+t/06_apr.t
