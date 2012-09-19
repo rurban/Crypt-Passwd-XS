@@ -1,19 +1,22 @@
 use strict;
 use warnings;
 
-use Test::More 'tests' => 9;
+use Test::More 'tests' => 12;
 use Crypt::Passwd::XS ();
 
 my $checks = [
-    [ 'test1234', 'test1234', 'tesvSclXGCVNk' ],
-    [ 'test1234', 'aa',       'aaGUTMncdkeWY' ],
-    [ 'test1234', 'bb',       'bbO19gCe57B0E' ],
-    [ 'test1234', 'a',        'aaGUTMncdkeWY' ],
-    [ 'test1234', 'b',        'bbO19gCe57B0E' ],
-    [ 'test1234', '',         '' ],
-    [ '',         'aa',       'aaQSqAReePlq6' ],
-    [ 'test1234', undef,      '' ],
-    [ undef,      'aa',       'aaQSqAReePlq6' ],
+    [ 'test1234',  'test1234', 'tesvSclXGCVNk' ],
+    [ 'test1234',  'aa',       'aaGUTMncdkeWY' ],
+    [ 'test1234',  'bb',       'bbO19gCe57B0E' ],
+    [ 'test1234',  'a',        'aaGUTMncdkeWY' ],
+    [ 'test1234',  'b',        'bbO19gCe57B0E' ],
+    [ 'test1234',  '',         '' ],
+    [ '',          'aa',       'aaQSqAReePlq6' ],
+    [ 'test1234',  undef,      '' ],
+    [ undef,       'aa',       'aaQSqAReePlq6' ],
+    [ "test",      "AA",       "AAW6rxDhBN6eQ" ],
+    [ "test\x801", "AA",       "AAeTIRMhsOoQ6" ],
+    [ "test\x802", "AA",       "AAMb/pmEmB1WE" ],
 ];
 
 foreach my $check_ref (@$checks) {

@@ -3,7 +3,7 @@ use Config;
 
 my %CFG = (
     'NAME'          => 'Crypt::Passwd::XS',
-    'AUTHOR'        => 'John Lightsey <jd@cpanel.net>',
+    'AUTHOR'        => 'cPanel <cpanel@cpan.org>',
     'VERSION_FROM'  => 'lib/Crypt/Passwd/XS.pm',
     'ABSTRACT_FROM' => 'lib/Crypt/Passwd/XS.pm',
     'PL_FILES'      => {},
