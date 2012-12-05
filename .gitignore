@@ -1,3 +1,4 @@
+Crypt-Passwd-XS-*
 sha256crypt.o
 sha512crypt.o
 md5crypt.o
@@ -11,3 +12,4 @@ XS.c
 XS.o
 blib/
 pm_to_blib
+MYMETA.*
