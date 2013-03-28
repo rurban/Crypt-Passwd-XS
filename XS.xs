@@ -44,7 +44,7 @@ SV* _multi_crypt(crypt_scheme_t scheme, SV *pw, SV *salt) {
     if (SvPOK(salt)) {
         salt_cstr = SvPVX(salt);
     } else {
-        salt_cstr = "";
+        salt_cstr = "\0";
     }
     cryptpw_cstr = crypt_function_map[scheme]( pw_cstr, salt_cstr );
     if (cryptpw_cstr != NULL) {

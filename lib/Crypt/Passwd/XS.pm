@@ -1,6 +1,6 @@
 package Crypt::Passwd::XS;
 
-our $VERSION = '0.601';
+our $VERSION = '0.602';
 
 require XSLoader;
 XSLoader::load( 'Crypt::Passwd::XS', $VERSION );
@@ -84,7 +84,7 @@ John Lightsey, E<lt>jd@cpanel.netE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2011 cPanel, Inc.
+Copyright (C) 2011-2013 cPanel, Inc.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.10.1 or,
