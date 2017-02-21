@@ -1,3 +1,7 @@
+0.603  Tue Feb 21 08:55:27 2017 Reini Urban <rurban@cpan.org>
+    - Fix dynamic-stack-buffer-overflow in sha256/512
+      with undefined salt.
+
 0.602  2013-03-28 Reini Urban <rurban@cpanel.net>
     - Fix global-buffer-overflow in des.c:681 cpx_crypt_des()
       with undefined salt.
